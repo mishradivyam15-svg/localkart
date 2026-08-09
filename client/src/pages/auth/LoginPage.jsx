@@ -11,6 +11,7 @@ import {
   Lock,
   Leaf,
   ArrowRight,
+  ScanFace,
 } from "lucide-react";
 import {
   login,
@@ -19,9 +20,11 @@ import {
   clearError,
 } from "../../features/authSlice";
 import toast from "react-hot-toast";
+import FaceLogin from "../../components/common/FaceLogin";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showFaceLogin, setShowFaceLogin] = useState(false);
 
   const {
     register,
@@ -235,6 +238,28 @@ export default function LoginPage() {
               )}
             </button>
           </form>
+
+          {/* OR Divider */}
+          <div className="flex items-center gap-3 my-6">
+            <div className="flex-1 h-px bg-neutral-200" />
+            <span className="text-sm text-neutral-400 font-medium">OR</span>
+            <div className="flex-1 h-px bg-neutral-200" />
+          </div>
+
+          {/* Face Login Button */}
+          <button
+            onClick={() => setShowFaceLogin(true)}
+            className="btn-secondary w-full !py-3.5 !text-base"
+            id="face-login-button"
+          >
+            <ScanFace className="w-5 h-5" />
+            Login with Face
+          </button>
+
+          {/* Face Login Modal */}
+          {showFaceLogin && (
+            <FaceLogin onClose={() => setShowFaceLogin(false)} />
+          )}
 
           <p className="text-center text-sm text-neutral-500 mt-8">
             Don't have an account?{" "}

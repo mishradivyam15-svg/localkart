@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  faceAuthEnabled: {
+    type: Boolean,
+    default: false
+  },
   otp: {
     code: String,
     expiresAt: Date

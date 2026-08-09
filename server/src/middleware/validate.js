@@ -123,6 +123,17 @@ const schemas = {
     }).optional(),
     deliveryRadius: Joi.number().max(50).optional(),
     minimumOrder: Joi.number().min(0).optional()
+  }),
+
+  faceEnroll: Joi.object({
+    image: Joi.string().min(100).required()
+      .messages({ 'string.min': 'Image data is too small — not a valid face image' })
+  }),
+
+  faceVerify: Joi.object({
+    email: Joi.string().email().required(),
+    image: Joi.string().min(100).required()
+      .messages({ 'string.min': 'Image data is too small — not a valid face image' })
   })
 };
 

@@ -177,4 +177,12 @@ export const complaintAPI = {
   addMessage: (id, data) => api.post(`/complaints/${id}/messages`, data),
 };
 
+// ============ Face Auth API ============
+export const faceAPI = {
+  enroll: (data) => api.post('/face/enroll', data),
+  verify: (data) => api.post('/face/verify', data),
+  unenroll: () => api.delete('/face/enroll'),
+  getStatus: () => api.get('/face/status'),
+};
+
 export default api;

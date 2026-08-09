@@ -313,8 +313,8 @@ exports.resendOTP = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'OTP sent', ...(process.env.NODE_ENV !== 'production' && { otp }) });
 });
 
-// Helper: Send token response
-const sendTokenResponse = (user, statusCode, res, otp = null) => {
+// Helper: Send token response (exported for reuse by face auth)
+const sendTokenResponse = exports.sendTokenResponse = (user, statusCode, res, otp = null) => {
   const token = user.getSignedJwtToken();
 
   const options = {

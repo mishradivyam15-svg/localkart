@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { authAPI } from "../api";
+import { authAPI, faceAPI } from "../api";
 
 // Load user from localStorage
 let savedUser = null;
@@ -73,6 +73,25 @@ export const logout = createAsyncThunk("auth/logout", async () => {
   localStorage.removeItem("farm2door_token");
   localStorage.removeItem("farm2door_user");
 });
+
+// FACE LOGIN
+export const faceLogin = createAsyncThunk(
+  "auth/faceLogin",
+  async ({ email, image }, { rejectWithValue }) => {
+    try {
+      const { data } = await faceAPI.verify({ email, image });
+
+      localStorage.setItem("farm2door_token", data.token);
+      localStorage.setItem("farm2door_user", JSON.stringify(data.data));
+
+      return data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Face login failed"
+      );
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -161,6 +180,24 @@ const authSlice = createSlice({
         state.deliveryProfile = null;
         state.loading = false;
         state.error = null;
+      })
+
+      // FACE LOGIN (same state changes as password login)
+      .addCase(faceLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+
+      .addCase(faceLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload.data;
+        state.token = action.payload.token;
+      })
+
+      .addCase(faceLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });

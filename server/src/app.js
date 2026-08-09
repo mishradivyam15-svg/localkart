@@ -27,6 +27,7 @@ const deliveryRoutes = require("./routes/delivery.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
 const cartRoutes = require("./routes/cart.routes");
 const complaintRoutes = require("./routes/complaint.routes");
+const faceRoutes = require("./routes/face.routes");
 
 const app = express();
 app.set('trust proxy', 1);
@@ -94,9 +95,19 @@ const authLimiter = rateLimit({
   },
 });
 
+const faceLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: {
+    success: false,
+    message: "Too many face authentication attempts, try again later.",
+  },
+});
+
 if (process.env.NODE_ENV === "production") {
   app.use("/api/v1/auth", authLimiter);
 }
+app.use("/api/v1/face/verify", faceLimiter);
 
 /*
 =================================
@@ -132,6 +143,9 @@ app.use("/api/v1/delivery", deliveryRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/complaints", complaintRoutes);
+
+// Face auth routes — increased body limit for base64 images
+app.use("/api/v1/face", express.json({ limit: "5mb" }), faceRoutes);
 
 /*
 =================================
